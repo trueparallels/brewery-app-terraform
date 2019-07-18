@@ -38,3 +38,11 @@ resource "aws_dynamodb_table" "brewery-app-favorites" {
     type = "N"
   }
 }
+
+resource "aws_vpc" "brewery-app-vpc" {
+  cidr_block = "172.31.0.0/16"
+
+  tags = {
+    Name = "brewery-app-vpc"
+  }
+}
