@@ -51,6 +51,11 @@ resource "aws_cloudwatch_log_group" "brewery-app-logs" {
   name = "BreweryApp"
 }
 
+resource "aws_cloudwatch_log_stream" "brewery-app-log-stream" {
+  name = "BreweryAppLogs"
+  log_group_name = "${aws_cloudwatch_log_group.brewery-app-logs.name}"
+}
+
 
 module "ecs" {
   source = "./modules/ecs"

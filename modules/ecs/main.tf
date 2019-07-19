@@ -22,7 +22,6 @@ data "template_file" "container_def" {
   }
 }
 
-
 resource "aws_ecs_task_definition" "brewery-app-backend-task" {
   family = "brewery-app-backend-family"
   container_definitions = "${data.template_file.container_def.rendered}"
@@ -34,12 +33,8 @@ resource "aws_ecs_task_definition" "brewery-app-backend-task" {
   task_role_arn = "${aws_iam_role.ecs_task_execution_role.arn}"
 }
 
-# data "template_file" "task_execution_role_policy" {
-#   template = "${file("${path.module}/policies/task_execution_role_policy.json")}"
-# }
-
-
 resource "aws_iam_policy" "ecs_task_execution_role_policy" {
+  name = "ecs_task_execution_role_policy"
   policy = "${file("${path.module}/policies/allowed_actions_policy.json")}"
 }
 
@@ -47,3 +42,10 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs_task_execution_role"
   assume_role_policy = "${file("${path.module}/policies/task_execution_role_policy.json")}"
 }
+
+resource "aws_iam_policy_attachment" "ecs_policy_attachment" {
+  name = "ecs_policy_attachment"
+  policy_arn = "${aws_iam_policy.ecs_task_execution_role_policy.arn}"
+  roles = ["${aws_iam_role.ecs_task_execution_role.name}"]
+}
+
