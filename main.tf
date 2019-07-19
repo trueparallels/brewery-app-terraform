@@ -47,6 +47,11 @@ resource "aws_vpc" "brewery-app-vpc" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "brewery-app-logs" {
+  name = "BreweryApp"
+}
+
+
 module "ecs" {
   source = "./modules/ecs"
   ecr_repo_url = module.ecr.ecr_repo_url
