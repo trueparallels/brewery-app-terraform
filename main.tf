@@ -46,3 +46,18 @@ resource "aws_vpc" "brewery-app-vpc" {
     Name = "brewery-app-vpc"
   }
 }
+
+module "ecs" {
+  source = "./modules/ecs"
+  ecr_repo_url = module.ecr.ecr_repo_url
+  brewery_app_subnet_id = module.network.brewery_app_subnet_id
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+}
+
+module "network" {
+  source = "./modules/network"
+  brewery_app_vpc_id = "${aws_vpc.brewery-app-vpc.id}"
+}
