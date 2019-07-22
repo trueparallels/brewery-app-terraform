@@ -5,3 +5,7 @@ variable "ecr_repo_url" {
 variable "brewery_app_subnet_id" {
   type = "string"
 }
+
+variable "brewery_app_sg" {
+  type = string
+}

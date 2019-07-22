@@ -11,6 +11,8 @@ resource "aws_ecs_service" "brewery-app-backend-service" {
   
   network_configuration {
     subnets = ["${var.brewery_app_subnet_id}"]
+    security_groups = ["${var.brewery_app_sg}"]
+    assign_public_ip = true
   }
 }
 
