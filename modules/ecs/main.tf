@@ -21,6 +21,8 @@ data "template_file" "container_def" {
 
   vars = {
     image = "${var.ecr_repo_url}"
+    log_group = "${var.cloudwatch_log_group}"
+    log_region = "${var.cloudwatch_log_region}"
   }
 }
 

@@ -51,17 +51,18 @@ resource "aws_cloudwatch_log_group" "brewery-app-logs" {
   name = "BreweryApp"
 }
 
-resource "aws_cloudwatch_log_stream" "brewery-app-log-stream" {
-  name = "BreweryAppLogs"
-  log_group_name = "${aws_cloudwatch_log_group.brewery-app-logs.name}"
-}
-
+# resource "aws_cloudwatch_log_stream" "brewery-app-log-stream" {
+#   name = "BreweryAppLogs"
+#   log_group_name = "${aws_cloudwatch_log_group.brewery-app-logs.name}"
+# }
 
 module "ecs" {
   source = "./modules/ecs"
   ecr_repo_url = module.ecr.ecr_repo_url
   brewery_app_subnet_id = module.network.brewery_app_subnet_id
   brewery_app_sg = module.network.brewery-app-sg-allow_http
+  cloudwatch_log_group = aws_cloudwatch_log_group.brewery-app-logs.name
+  cloudwatch_log_region = var.region
 }
 
 module "ecr" {
