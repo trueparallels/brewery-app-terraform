@@ -60,9 +60,11 @@ module "ecs" {
   source = "./modules/ecs"
   ecr_repo_url = module.ecr.ecr_repo_url
   brewery_app_subnet_id = module.network.brewery_app_subnet_id
+  brewery_app_subnet_two_id = module.network.brewery_app_subnet_id_two
   brewery_app_sg = module.network.brewery-app-sg-allow_http
   cloudwatch_log_group = aws_cloudwatch_log_group.brewery-app-logs.name
   cloudwatch_log_region = var.region
+  brewery_app_vpc_id = aws_vpc.brewery-app-vpc.id
 }
 
 module "ecr" {

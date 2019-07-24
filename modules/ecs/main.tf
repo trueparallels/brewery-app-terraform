@@ -9,6 +9,12 @@ resource "aws_ecs_service" "brewery-app-backend-service" {
   task_definition = "${aws_ecs_task_definition.brewery-app-backend-task.arn}"
   cluster = "${aws_ecs_cluster.brewery-app-cluster.arn}"
   
+  load_balancer {
+    target_group_arn = "${aws_alb_target_group.lb_target_group.arn}"
+    container_name = "brewery-app-backend"
+    container_port = 80
+  }
+  
   network_configuration {
     subnets = ["${var.brewery_app_subnet_id}"]
     security_groups = ["${var.brewery_app_sg}"]
@@ -53,3 +59,31 @@ resource "aws_iam_policy_attachment" "ecs_policy_attachment" {
   roles = ["${aws_iam_role.ecs_task_execution_role.name}"]
 }
 
+resource "aws_alb" "load_balancer" {
+  name = "brewery-app-backend-lb"
+  subnets = ["${var.brewery_app_subnet_id}", "${var.brewery_app_subnet_two_id}"]
+  security_groups = ["${var.brewery_app_sg}"]
+}
+
+resource "aws_alb_target_group" "lb_target_group" {
+  name = "brewery-app-lb-target-group"
+  port = 80
+  protocol = "HTTP"
+  vpc_id = "${var.brewery_app_vpc_id}"
+  target_type = "ip"
+
+  health_check {
+    path = "/ok"
+  }
+}
+
+resource "aws_alb_listener" "lb_listener" {
+  load_balancer_arn = "${aws_alb.load_balancer.id}"
+  port = 80
+  protocol = "HTTP"
+  
+  default_action {
+    target_group_arn = "${aws_alb_target_group.lb_target_group.id}"
+    type = "forward"
+  }
+}

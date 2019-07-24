@@ -7,6 +7,15 @@ resource "aws_subnet" "brewery-app-subnet" {
   }
 }
 
+resource "aws_subnet" "brewery-app-subnet-two" {
+  vpc_id = "${var.brewery_app_vpc_id}"
+  cidr_block = "172.31.112.0/20"
+
+  tags = {
+    Name = "brewery-app-subnet-two"
+  }
+}
+
 resource "aws_security_group" "allow-http-traffic" {
   name = "allow-http-traffic"
   vpc_id = "${var.brewery_app_vpc_id}"

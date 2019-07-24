@@ -13,6 +13,13 @@
         "awslogs-region": "${log_region}",
         "awslogs-stream-prefix": "app"
       }
-    }
+    },
+    "portMappings": [
+      {
+        "hostPort": 80,
+        "containerPort": 80,
+        "protocol": "tcp"
+      }
+    ]
   } 
 ]
