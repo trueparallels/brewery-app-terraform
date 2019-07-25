@@ -11,7 +11,8 @@
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "dynamodb:GetItem",
-        "dynamodb:UpdateItem"
+        "dynamodb:UpdateItem",
+        "dynamodb:PutItem"
       ],
       "Resource": "*"
     }
