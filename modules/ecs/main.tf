@@ -6,11 +6,11 @@ resource "aws_ecs_service" "brewery-app-backend-service" {
   name = "brewery-app-backend-service"
   desired_count = 1
   launch_type = "FARGATE"
-  task_definition = "${aws_ecs_task_definition.brewery-app-backend-task.arn}"
-  cluster = "${aws_ecs_cluster.brewery-app-cluster.arn}"
+  task_definition = aws_ecs_task_definition.brewery-app-backend-task.arn
+  cluster = aws_ecs_cluster.brewery-app-cluster.arn
   
   load_balancer {
-    target_group_arn = "${aws_alb_target_group.lb_target_group.arn}"
+    target_group_arn = aws_alb_target_group.lb_target_group.arn
     container_name = "brewery-app-backend"
     container_port = 80
   }
@@ -34,29 +34,29 @@ data "template_file" "container_def" {
 
 resource "aws_ecs_task_definition" "brewery-app-backend-task" {
   family = "brewery-app-backend-family"
-  container_definitions = "${data.template_file.container_def.rendered}"
+  container_definitions = data.template_file.container_def.rendered
   network_mode = "awsvpc"
   cpu = 256
   memory = 512
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn = "${aws_iam_role.ecs_task_execution_role.arn}"
-  task_role_arn = "${aws_iam_role.ecs_task_execution_role.arn}"
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn = aws_iam_role.ecs_task_execution_role.arn
 }
 
 resource "aws_iam_policy" "ecs_task_execution_role_policy" {
   name = "ecs_task_execution_role_policy"
-  policy = "${file("${path.module}/policies/allowed_actions_policy.json")}"
+  policy = file("${path.module}/policies/allowed_actions_policy.json")
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs_task_execution_role"
-  assume_role_policy = "${file("${path.module}/policies/task_execution_role_policy.json")}"
+  assume_role_policy = file("${path.module}/policies/task_execution_role_policy.json")
 }
 
 resource "aws_iam_policy_attachment" "ecs_policy_attachment" {
   name = "ecs_policy_attachment"
-  policy_arn = "${aws_iam_policy.ecs_task_execution_role_policy.arn}"
-  roles = ["${aws_iam_role.ecs_task_execution_role.name}"]
+  policy_arn = aws_iam_policy.ecs_task_execution_role_policy.arn
+  roles = [aws_iam_role.ecs_task_execution_role.name]
 }
 
 resource "aws_alb" "load_balancer" {
@@ -69,7 +69,7 @@ resource "aws_alb_target_group" "lb_target_group" {
   name = "brewery-app-lb-target-group"
   port = 80
   protocol = "HTTP"
-  vpc_id = "${var.brewery_app_vpc_id}"
+  vpc_id = var.brewery_app_vpc_id
   target_type = "ip"
 
   health_check {
@@ -78,12 +78,12 @@ resource "aws_alb_target_group" "lb_target_group" {
 }
 
 resource "aws_alb_listener" "lb_listener" {
-  load_balancer_arn = "${aws_alb.load_balancer.id}"
+  load_balancer_arn = aws_alb.load_balancer.id
   port = 80
   protocol = "HTTP"
   
   default_action {
-    target_group_arn = "${aws_alb_target_group.lb_target_group.id}"
+    target_group_arn = aws_alb_target_group.lb_target_group.id
     type = "forward"
   }
 }

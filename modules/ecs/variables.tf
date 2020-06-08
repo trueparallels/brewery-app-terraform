@@ -1,13 +1,13 @@
 variable "ecr_repo_url" {
-  type = "string"
+  type = string
 }
 
 variable "brewery_app_subnet_id" {
-  type = "string"
+  type = string
 }
 
 variable "brewery_app_subnet_two_id" {
-  type = "string"
+  type = string
 }
 
 variable "brewery_app_sg" {
